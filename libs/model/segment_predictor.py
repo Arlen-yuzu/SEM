@@ -52,7 +52,7 @@ def cls_logits_to_segments(segments_logit, masks, type, spans=None, scale=1, thr
 
 def cal_ext_segments(cls_probs, lengths, bg_spans, scale=1, threshold=0.5):
     """
-    Ñ°ÕÒ¼ÙÑôĞÔ. ÔÚbg_spans(·ÇlineÇøÓò,¼´ÎÄ×ÖÇøÓò)ÖĞÑ°ÕÒÔ¤²â¸ÅÂÊ×î´ó, ÇÒ´óÓÚthresholdµÄĞĞ.
+    å¯»æ‰¾å‡é˜³æ€§. åœ¨bg_spans(élineåŒºåŸŸ,å³æ–‡å­—åŒºåŸŸ)ä¸­å¯»æ‰¾é¢„æµ‹æ¦‚ç‡æœ€å¤§, ä¸”å¤§äºthresholdçš„è¡Œ.
     """
     batch_size = cls_probs.shape[0]
     ext_segments = list()

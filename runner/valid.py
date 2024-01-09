@@ -18,14 +18,18 @@ from libs.utils.comm import synchronize, all_gather
 def init():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--lrc", type=str, default=None)
+    parser.add_argument("--lrc", type=str, default='/data/xuyilun/project/SEM/data/SciTSR/table/table.lrc')
     parser.add_argument("--cfg", type=str, default='default')
     parser.add_argument("--local_rank", type=int, default=0)
+    parser.add_argument("--valid_data_dir", type=str, default='/data/xuyilun/project/SEM/data/SciTSR/table/img')
     args = parser.parse_args()
     
     setup_config(args.cfg)
     if args.lrc is not None:
         cfg.valid_lrc_path = args.lrc
+    if args.valid_data_dir is not None:
+        cfg.valid_data_dir = args.valid_data_dir
+    
 
     os.environ['LOCAL_RANK'] = str(args.local_rank)
 
@@ -91,7 +95,8 @@ def main():
         cfg.vocab,
         cfg.valid_lrc_path,
         cfg.valid_num_workers,
-        cfg.valid_batch_size
+        cfg.valid_batch_size,
+        cfg.valid_data_dir
     )
     logger.info(
         'Valid dataset have %d samples, %d batchs with batch_size=%d' % \
@@ -101,12 +106,16 @@ def main():
                 valid_dataloader.batch_size
             )
     )
+    
+    # for i, data_batch in enumerate(valid_dataloader):
+    #     print(data_batch['tables'][0].keys())
+    #     breakq
 
     model = build_model(cfg)
     model.cuda()
     
-    load_checkpoint(cfg.eval_checkpoint, model)
-    logger.info('Load checkpoint from: %s' % cfg.eval_checkpoint)
+    # load_checkpoint(cfg.eval_checkpoint, model)
+    # logger.info('Load checkpoint from: %s' % cfg.eval_checkpoint)
 
     with torch.no_grad():
         valid(cfg, valid_dataloader, model)

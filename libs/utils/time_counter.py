@@ -31,17 +31,17 @@ def format_table(table, padding=1):
         for col_idx, cell in enumerate(row):
             cols_width[col_idx] = max(cols_width[col_idx], len(cell))
 
-    string = '©°'
+    string = 'åºš'
     for col_idx in range(num_cols):
-        string += '©¤' * (padding * 2 + cols_width[col_idx])
+        string += 'å²¸' * (padding * 2 + cols_width[col_idx])
         if col_idx == num_cols - 1:
-            string += '©´'
+            string += 'åº–'
         else:
-            string += '©Ð'
+            string += 'æˆ¿'
     string += '\n'
 
     for row_idx, row in enumerate(table):
-        string += '©¦'
+        string += 'å²«'
         for col_idx in range(num_cols):
             if col_idx < len(row):
                 word = row[col_idx]
@@ -53,26 +53,26 @@ def format_table(table, padding=1):
             string += ' ' * (padding + left_pad)
             string += word
             string += ' ' * (padding + right_pad)
-            string += '©¦'
+            string += 'å²«'
         
         string += '\n'
 
         if row_idx < len(table) - 1:
-            string += '©À'
+            string += 'å¿µ'
         else:
-            string += '©¸'
+            string += 'å¼©'
         for col_idx in range(num_cols):
-            string += '©¤' * (padding * 2 + cols_width[col_idx])
+            string += 'å²¸' * (padding * 2 + cols_width[col_idx])
             if col_idx == num_cols - 1:
                 if row_idx < len(table) - 1:
-                    string += '©È'
+                    string += 'æ€•'
                 else:
-                    string += '©¼'
+                    string += 'å½¼'
             else:
                 if row_idx < len(table) - 1:
-                    string += '©à'
+                    string += 'æ‹ˆ'
                 else:
-                    string += '©Ø'
+                    string += 'æ‹‚'
 
         string += '\n'
     return string

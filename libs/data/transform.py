@@ -45,7 +45,7 @@ class CalCellSpans:
 
 class CalHeadBodyDivide:
     def __call__(self, image, table=None, cls_label=None, rows_fg_span=None, rows_bg_span=None, cols_fg_span=None, cols_bg_span=None, cells_span=None):
-        if table is None:
+        if table is None or 'head_rows' not in table:
             divide = None
         else:
             head_rows = table['head_rows']

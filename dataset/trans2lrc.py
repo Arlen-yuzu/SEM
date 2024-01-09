@@ -2,15 +2,15 @@ import os
 import glob
 import tqdm
 import numpy as np
-from utlis.list_record_cache import ListRecordCacher, merge_record_file
-from utlis.utlis import get_sub_paths, crop_pdf, crop_cells, visualize_cell, match_cells
+from utils.list_record_cache import ListRecordCacher, merge_record_file
+from utils.utils import get_sub_paths, crop_pdf, crop_cells, visualize_cell, match_cells
 
 
 def parse_args():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('src_dir', type=str, default=None)
-    parser.add_argument('dst_dir', type=str, default=None)
+    parser.add_argument('--src_dir', type=str, default='/data/xuyilun/project/SEM/data/SciTSR/test')
+    parser.add_argument('--dst_dir', type=str, default='/data/xuyilun/project/SEM/data/SciTSR/table')
     parser.add_argument('-n', '--num_workers', type=int, default=0)
     args = parser.parse_args()
     return args
@@ -37,6 +37,8 @@ def single_process(paths, dst_dir):
     error_count = 0
     correct_count = 0
     for id, path in enumerate(tqdm.tqdm(paths)):
+        if id == 100:
+            break
         try:
             pdf_path, chunk_path, structure_path = path
             positions, transcripts = crop_pdf(path, output_pdf_dir)
@@ -44,10 +46,12 @@ def single_process(paths, dst_dir):
             crop_cells(os.path.join(output_pdf_dir, os.path.splitext(os.path.basename(pdf_path))[0] + '.png'), output_img_dir, table)
             table['id'] = id
             table['image_path'] = os.path.join(output_img_dir, os.path.splitext(os.path.basename(pdf_path))[0] + '.png')
+            # print(table)
             visualize_cell(os.path.join(output_img_dir, os.path.splitext(os.path.basename(pdf_path))[0] + '.png'), output_visual_dir, table)
             cacher.add_record(table)
             correct_count += 1
-        except:
+        except Exception as e:
+            # print(e)
             error_count += 1
             error_paths.append(path)
             crop_pdf(path, output_error_dir)

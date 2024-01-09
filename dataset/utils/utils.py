@@ -112,9 +112,9 @@ def crop_pdf(path, output_dir, zoom_x = 2.0, zoom_y = 2.0, rotate=0, expand=10, 
     assert doc.pageCount == 1, print(pdf_name, ' has more than 1 page!')
 
     # transfer pdf to img
-    trans = fitz.Matrix(zoom_x, zoom_y).preRotate(rotate)
-    pm = doc[0].getPixmap(matrix=trans, alpha=False)
-    pm.writePNG(os.path.join(output_dir, '%s.png' % pdf_name))
+    trans = fitz.Matrix(zoom_x, zoom_y).prerotate(rotate) # preRotate
+    pm = doc[0].get_pixmap(matrix=trans, alpha=False) # getPixmap
+    pm.save(os.path.join(output_dir, '%s.png' % pdf_name)) # writePNG
 
     # crop table region
     pdf_img = cv2.imread(os.path.join(output_dir, '%s.png' % pdf_name))
@@ -245,8 +245,7 @@ def match_cells(path, positions, transcripts, k=16, start=0.333, stop=0.1, stop_
     with open(path[2], 'r') as f:
         cells = json.load(f)['cells']
     
-    # first sort cells from left to right, from top to down
-    cells_pos = [] # xl1, yl1, xl2, yl2
+    cells_pos = [] # start_col, start_row, end_col, end_row
     contents = []
     for cell in cells:
         cells_pos.append([cell['start_col'], cell['start_row'], cell['end_col'], cell['end_row']])
