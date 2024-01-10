@@ -15,7 +15,7 @@ def check_continuous(seq):
 
 def table_to_latex(table):
     def cal_cls_id(transcript):
-        transcript = ''.join(transcript)
+        # transcript = ''.join(transcript)
         if transcript == '':
             return '</none>'
         elif transcript == '<b> </b>':

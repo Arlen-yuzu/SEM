@@ -9,7 +9,7 @@ from .scitsr.eval import json2Relations, eval_relations
 
 
 def parse_layout(spans, num_rows, num_cols):
-    layout = np.full([num_rows, num_cols], -1, dtype=np.int)
+    layout = np.full([num_rows, num_cols], -1, dtype=np.int32)
     cell_count = 0
     for x1, y1, x2, y2 in spans:
         layout[y1:y2+1, x1:x2+1] = cell_count
