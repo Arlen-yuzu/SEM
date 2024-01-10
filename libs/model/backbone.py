@@ -7,7 +7,7 @@ from typing import Type, Any, Callable, Union, List, Optional
 
 model_paths = {
     'resnet18': '/yrfs2/cv6/frwang/PretrainedModelParams/pytorch/ImageNet/ResNet/resnet18-5c106cde.pth',
-    'resnet34': '/Pretrain/resnet_34.pth',
+    'resnet34': '/data/xuyilun/project/pretrain/resnet/resnet34-333f7ec4.pth',
     'resnet50': '/yrfs2/cv6/frwang/PretrainedModelParams/pytorch/ImageNet/ResNet/resnet50-19c8e357.pth',
     'resnet101': '/yrfs2/cv6/frwang/PretrainedModelParams/pytorch/ImageNet/ResNet/resnet101-5d3b4d8f.pth',
     'resnet152': '/yrfs2/cv6/frwang/PretrainedModelParams/pytorch/ImageNet/ResNet/resnet152-b121ed2d.pth',

@@ -24,7 +24,7 @@ def table_to_latex(table):
             return '</space>'
         else:
             return '</line>'
-    assert table['layout'].max() + 1 == len(table['cells'])
+    assert table['layout'].max() + 1 == len(table['cells']), print(table['layout'].max() + 1, len(table['cells']))
     latex = [cal_cls_id(cell['transcript']) for cell in table['cells']]
     return latex
 

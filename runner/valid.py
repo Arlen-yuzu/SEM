@@ -13,15 +13,16 @@ from libs.utils import logger
 from libs.utils.cal_f1 import pred_result_to_table, table_to_relations, evaluate_f1
 from libs.utils.checkpoint import load_checkpoint
 from libs.utils.comm import synchronize, all_gather
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
 
 def init():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--lrc", type=str, default='/data/xuyilun/project/SEM/data/SciTSR/table/table.lrc')
+    parser.add_argument("--lrc", type=str, default='/shared/aia/alg/xyl/tsrdataset/model/sem/icdar13/test.lrc')
     parser.add_argument("--cfg", type=str, default='default')
     parser.add_argument("--local_rank", type=int, default=0)
-    parser.add_argument("--valid_data_dir", type=str, default='/data/xuyilun/project/SEM/data/SciTSR/table/img')
+    parser.add_argument("--valid_data_dir", type=str, default='/shared/aia/alg/xyl/tsrdataset/unify/icdar13/image')
     args = parser.parse_args()
     
     setup_config(args.cfg)
