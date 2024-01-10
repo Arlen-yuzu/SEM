@@ -159,6 +159,8 @@ def extend_segments(row_segments, rows_es, col_segments, cols_es, cells_spans, l
         ext_cells_spans_pi = list()
         for cell_idx, cell_span in enumerate(cells_spans_pi):
             l, t, r, b = cell_span
+            print(r+1, len(col_segments_idx), b+1, len(row_segments_idx))
+            print(col_segments_idx)
             l = col_segments_idx.index(l)
             r = col_segments_idx.index(r+1) - 1
             t = row_segments_idx.index(t)

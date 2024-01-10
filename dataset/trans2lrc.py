@@ -46,7 +46,7 @@ def single_process(paths, dst_dir):
             crop_cells(os.path.join(output_pdf_dir, os.path.splitext(os.path.basename(pdf_path))[0] + '.png'), output_img_dir, table)
             table['id'] = id
             table['image_path'] = os.path.join(output_img_dir, os.path.splitext(os.path.basename(pdf_path))[0] + '.png')
-            # print(table)
+            # print(table.keys())
             visualize_cell(os.path.join(output_img_dir, os.path.splitext(os.path.basename(pdf_path))[0] + '.png'), output_visual_dir, table)
             cacher.add_record(table)
             correct_count += 1

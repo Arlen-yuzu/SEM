@@ -2,15 +2,15 @@ import os
 import glob
 import tqdm
 import numpy as np
-from utlis.list_record_cache import ListRecordCacher, merge_record_file
-from utlis.utlis import get_paths, get_sub_paths, crop_pdf, extract_ocr, refine_table, visualize_table
+from utils.list_record_cache import ListRecordCacher, merge_record_file
+from utils.utils import get_paths, get_sub_paths, crop_pdf, extract_ocr, refine_table, visualize_table
 
 
 def parse_args():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('src_dir', type=str, default=None)
-    parser.add_argument('dst_dir', type=str, default=None)
+    parser.add_argument('--src_dir', type=str, default='/data/xuyilun/project/SEM/data/SciTSR/test')
+    parser.add_argument('--dst_dir', type=str, default='/data/xuyilun/project/SEM/data/SciTSR/table2')
     parser.add_argument('-n', '--num_workers', type=int, default=0)
     args = parser.parse_args()
     return args
@@ -52,6 +52,8 @@ def single_process(paths, dst_dir):
 
             cacher.add_record(table)
             correct_count += 1
+            print(table.keys())
+            break
         except:
             error_count += 1
             error_paths.append(path)

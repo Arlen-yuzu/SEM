@@ -22,7 +22,7 @@ class LRCRecordLoader:
 
     def get_info(self, idx):
         table = self.loader.get_record(idx)
-        image = Image.open(table['image_path']).convert('RGB')
+        image = Image.open(os.path.join(self.data_root_dir, table['image_path'])).convert('RGB')
         w = image.width
         h = image.height
         n_rows, n_cols = table['layout'].shape

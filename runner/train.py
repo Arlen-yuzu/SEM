@@ -59,25 +59,25 @@ def train(cfg, epoch, dataloader, model, optimizer, scheduler, time_counter, syn
         cols_fg_spans = data_batch['cols_fg_spans']
         cols_bg_spans = data_batch['cols_bg_spans']
         cells_spans = data_batch['cells_spans']
-        divide_labels = data_batch['divide_labels'].to(cfg.device)
+        divide_labels = data_batch['divide_labels'].to(cfg.device) if data_batch['divide_labels'][0] is not None else None
         layouts = data_batch['layouts'].to(cfg.device)
 
-        try:
-            optimizer.zero_grad()
-            pred_result, result_info = model(
-                images, images_size,
-                cls_labels, labels_mask, layouts,
-                rows_fg_spans, rows_bg_spans,
-                cols_fg_spans, cols_bg_spans,
-                cells_spans, divide_labels,
-            )
-            loss = sum([val for key, val in result_info.items() if 'loss' in key])
-            loss.backward()
-            optimizer.step()
-            scheduler.step()
-            counter.update(result_info)
-        except:
-            logger.info('CUDA Out Of Memory')
+        # try:
+        optimizer.zero_grad()
+        pred_result, result_info = model(
+            images, images_size,
+            cls_labels, labels_mask, layouts,
+            rows_fg_spans, rows_bg_spans,
+            cols_fg_spans, cols_bg_spans,
+            cells_spans, divide_labels,
+        )
+        loss = sum([val for key, val in result_info.items() if 'loss' in key])
+        loss.backward()
+        optimizer.step()
+        scheduler.step()
+        counter.update(result_info)
+        # except:
+        #     logger.info('CUDA Out Of Memory')
 
         if it % cfg.log_sep == 0:
             logger.info(
@@ -120,11 +120,7 @@ def valid(cfg, dataloader, model):
         pred_relations = [table_to_relations(table) for table in pred_tables]
         total_pred_relations.extend(pred_relations)
         # label
-        label_relations = []
-        for table in tables:
-            label_path = os.path.join(cfg.valid_data_dir, table['label_path'])
-            with open(table['label_path'], 'r') as f:
-                label_relations.append(json.load(f))
+        label_relations = [table_to_relations(table) for table in tables]
         total_label_relations.extend(label_relations)
 
     # cal P, R, F1

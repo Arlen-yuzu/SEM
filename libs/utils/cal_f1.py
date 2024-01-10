@@ -47,6 +47,9 @@ def parse_cells(layout, spans, row_segments, col_segments, lines):
         cells.append(cell)
 
     extend_cell_lines(cells, lines)
+    
+    for cell in cells:
+        cell['bbox'] = segmentation_to_bbox(cell['segmentation'])
 
     return cells
 
@@ -123,6 +126,16 @@ def pred_result_to_table(table, pred_result):
     cells = parse_cells(layout, spans, row_segments, col_segments, lines)
     head_rows = list(range(0, divide))
     body_rows = list(range(divide, num_rows))
+    
+    num_cells = len(cells)
+    for cell_id in range(num_cells):
+        cell_positions = np.argwhere(layout == cell_id)
+        y1 = np.min(cell_positions[:, 0])
+        y2 = np.max(cell_positions[:, 0])
+        x1 = np.min(cell_positions[:, 1])
+        x2 = np.max(cell_positions[:, 1])
+        assert np.all(layout[y1:y2, x1:x2] == cell_id)
+        cells[cell_id]['logi']=[y1, y2, x1, x2]
     
     table = dict(
         layout=layout,

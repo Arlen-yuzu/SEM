@@ -3,6 +3,7 @@ import json
 sys.path.append('./')
 sys.path.append('../')
 import os
+import cv2
 import tqdm
 import torch
 import numpy as np
@@ -23,6 +24,7 @@ def init():
     parser.add_argument("--cfg", type=str, default='default')
     parser.add_argument("--local_rank", type=int, default=0)
     parser.add_argument("--valid_data_dir", type=str, default='/shared/aia/alg/xyl/tsrdataset/unify/icdar13/image')
+    parser.add_argument("--vis_dir", type=str, default='vis_icdar13')
     args = parser.parse_args()
     
     setup_config(args.cfg)
@@ -30,7 +32,11 @@ def init():
         cfg.valid_lrc_path = args.lrc
     if args.valid_data_dir is not None:
         cfg.valid_data_dir = args.valid_data_dir
+    if args.vis_dir is not None:
+        cfg.vis_dir = args.vis_dir
     
+    if not os.path.exists(args.vis_dir):
+        os.makedirs(args.vis_dir)
 
     os.environ['LOCAL_RANK'] = str(args.local_rank)
 
@@ -60,7 +66,7 @@ def valid(cfg, dataloader, model):
         images_size = data_batch['images_size']
         images = data_batch['images'].to(cfg.device)
         tables = data_batch['tables']
-
+        
         pred_result, _ = model(images, images_size)
 
         # pred
@@ -71,13 +77,35 @@ def valid(cfg, dataloader, model):
             ) \
             for batch_idx in range(len(ids))
         ]
-        pred_relations = [table_to_relations(table) for table in pred_tables]
+        
+        pred_bbox = []
+        pred_logi = []
+        for cell in pred_tables[0]['cells']:
+            pred_bbox.append(cell['bbox'])
+            pred_logi.append(cell['logi'])
+        pred_bbox = np.array(pred_bbox)
+        pred_logi = np.array(pred_logi)
+        
+        # img_name = tables[0]['image_path']
+        # img = cv2.imread(os.path.join(cfg.valid_data_dir, img_name))
+        
+        # for bid, box in enumerate(pred_bbox):
+        #     for j in range(0, len(box), 2):
+        #         cv2.rectangle(img, (box[j], box[j + 1]), (box[(j + 2) % len(box)], box[(j + 3) % len(box)]), (0, 0, 255), 1) # 红色框为pred
+        #     logi = pred_logi[bid]
+        #     logi_txt = '{:.0f},{:.0f},{:.0f},{:.0f}'.format(logi[0], logi[1], logi[2], logi[3])
+        #     font = cv2.FONT_HERSHEY_SIMPLEX
+        #     cat_size = cv2.getTextSize(logi_txt, font, 0.3, 2)[0]
+        #     cv2.rectangle(img, (box[0], box[1]), (box[0] + cat_size[0], box[1] + cat_size[1]), (128,128,128), -1)
+        #     cv2.putText(img, logi_txt, (int(box[0]), int(box[1] + cat_size[1])), font, 0.30, (0, 0, 0), thickness=1, lineType=cv2.LINE_AA)
+        
+        # cv2.imwrite(os.path.join(cfg.vis_dir, img_name), img)
+        
+        pred_relations = [table_to_relations(table) for table in pred_tables]        
         total_pred_relations.extend(pred_relations)
+        
         # label
-        label_relations = []
-        for table in tables:
-            with open(table['label_path'], 'r') as f:
-                label_relations.append(json.load(f))
+        label_relations = [table_to_relations(table) for table in tables]
         total_label_relations.extend(label_relations)
 
     # cal P, R, F1
